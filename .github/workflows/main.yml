@@ -1,90 +1,48 @@
-name: CI Unity Build
+name: Actions 😎
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
-  build-android:
-    name: Build Android (Ubuntu)
+  build:
+    name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
+      # Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      - name: Cache Unity Library
-        uses: actions/cache@v3
+      # Cache
+      - uses: actions/cache@v3
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: Library-
+          restore-keys: |
+            Library-
 
-      - name: Setup Java JDK 19
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '19'
-
-      - name: Activate Unity License
-        uses: game-ci/unity-activate@v2
-        with:
-          unityEmail:    ${{ secrets.UNITY_EMAIL }}
-          unityPassword: ${{ secrets.UNITY_PASSWORD }}
-          unityLicense:  ${{ secrets.UNITY_LICENSE }}
-
-      - name: Build Android
-        uses: game-ci/unity-builder@v4
+      # Test
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v4
         env:
-          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          unityVersion:   '6000.0.42f1'
-          targetPlatform: Android
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Android APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Android Build
-          path: build/*.apk
-
-  build-windows:
-    name: Build Windows (Windows-2022)
-    runs-on: windows-2022
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-
-      - name: Cache Unity Library
-        uses: actions/cache@v3
-        with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: Library-
-
-      - name: Activate Unity License
-        uses: game-ci/unity-activate@v2
-        with:
-          unityEmail:    ${{ secrets.UNITY_EMAIL }}
-          unityPassword: ${{ secrets.UNITY_PASSWORD }}
-          unityLicense:  ${{ secrets.UNITY_LICENSE }}
-
-      - name: Build Windows
+      # Build
+      - name: Build project
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          unityVersion:     '6000.0.42f1'
-          targetPlatform:   StandaloneWindows64
+          targetPlatform: WebGL
 
-      - name: Upload Windows Build
-        uses: actions/upload-artifact@v4
+      # Output
+      - uses: actions/upload-artifact@v4
         with:
-          name: Windows Build
-          path: build/*.zip
+          name: Build
+          path: build
