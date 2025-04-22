@@ -1,9 +1,8 @@
 name: CI Unity Build
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
+  push:  
+  pull_request:  
 
 jobs:
   build-android:
