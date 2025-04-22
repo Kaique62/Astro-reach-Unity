@@ -20,7 +20,7 @@ MonoBehaviour:
     rid: 1044442003042205758
   m_OverrideGlobalSceneList: 1
   m_Scenes:
-  - m_enabled: 1
+  - m_enabled: 0
     m_path: Assets/MediaPipeUnity/Samples/Scenes/Hand Landmark Detection/Hand Landmark
       Detection.unity
   m_ScriptingDefines: []
