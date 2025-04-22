@@ -45,7 +45,7 @@ jobs:
           targetPlatform: Android
 
       - name: Upload Android APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: Android Build
           path: build/*.apk
@@ -84,7 +84,8 @@ jobs:
           targetPlatform:   StandaloneWindows64
 
       - name: Upload Windows Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
+
         with:
           name: Windows Build
           path: build/*.zip
