@@ -12,13 +12,16 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection.UI
 {
   public class HandLandmarkDetectionConfigWindow : ModalContents
   {
+    [Header("UI Components")]
     [SerializeField] private Dropdown _delegateInput;
     [SerializeField] private Dropdown _imageReadModeInput;
     [SerializeField] private Dropdown _runningModeInput;
-    [SerializeField] private InputField _numHandsInput;
     [SerializeField] private InputField _minHandDetectionConfidenceInput;
     [SerializeField] private InputField _minHandPresenceConfidenceInput;
     [SerializeField] private InputField _minTrackingConfidenceInput;
+
+    [Header("Config Parameters")]
+    [SerializeField] public int numHands = 1;
 
     private HandLandmarkDetectionConfig _config;
     private bool _isChanged;
@@ -26,6 +29,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection.UI
     private void Start()
     {
       _config = GameObject.Find("Solution").GetComponent<HandLandmarkerRunner>().config;
+      _config.NumHands = numHands;
       InitializeContents();
     }
 
@@ -52,15 +56,6 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection.UI
       _isChanged = true;
     }
 
-    private void SetNumHands()
-    {
-      if (int.TryParse(_numHandsInput.text, out var value))
-      {
-        _config.NumHands = value;
-        _isChanged = true;
-      }
-    }
-
     private void SetMinHandDetectionConfidence()
     {
       if (float.TryParse(_minHandDetectionConfidenceInput.text, out var value))
@@ -85,7 +80,6 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection.UI
       {
         _config.MinTrackingConfidence = value;
         _isChanged = true;
-
       }
     }
 
@@ -94,7 +88,6 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection.UI
       InitializeDelegate();
       InitializeImageReadMode();
       InitializeRunningMode();
-      InitializeNumHands();
       InitializeMinHandDetectionConfidence();
       InitializeMinHandPresenceConfidence();
       InitializeMinTrackingConfidence();
@@ -116,12 +109,6 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection.UI
     {
       InitializeDropdown<Tasks.Vision.Core.RunningMode>(_runningModeInput, _config.RunningMode.ToString());
       _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
-    }
-
-    private void InitializeNumHands()
-    {
-      _numHandsInput.text = _config.NumHands.ToString();
-      _numHandsInput.onValueChanged.AddListener(delegate { SetNumHands(); });
     }
 
     private void InitializeMinHandDetectionConfidence()

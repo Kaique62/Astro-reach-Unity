@@ -1,6 +1,24 @@
 name: Build project
 
-on: [push, pull_request]
+on:
+  repository_dispatch:
+    types: [build-request]
+  workflow_dispatch:
+    inputs:
+      targetPlatform:
+        description: 'Optional specific platform to build (leave empty for all)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - StandaloneOSX
+        - StandaloneWindows
+        - StandaloneWindows64
+        - StandaloneLinux64
+        - iOS
+        - Android
+        - WebGL
 
 jobs:
   buildForAllSupportedPlatforms:
@@ -9,14 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform:
-          - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-          - StandaloneWindows # Build a Windows standalone.
-          - StandaloneWindows64 # Build a Windows 64-bit standalone.
-          - StandaloneLinux64 # Build a Linux 64-bit standalone.
-          - iOS # Build an iOS player.
-          - Android # Build an Android .apk standalone app.
-          - WebGL # WebGL.
+        targetPlatform: ${{ fromJSON(needs.setup.outputs.platforms) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,3 +51,16 @@ jobs:
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
+
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      platforms: ${{ steps.set-platforms.outputs.platforms }}
+    steps:
+      - id: set-platforms
+        run: |
+          if [ "${{ github.event.inputs.targetPlatform }}" == "all" ]; then
+            echo 'platforms=["StandaloneOSX","StandaloneWindows","StandaloneWindows64","StandaloneLinux64","iOS","Android","WebGL"]' >> $GITHUB_OUTPUT
+          else
+            echo 'platforms=["${{ github.event.inputs.targetPlatform }}"]' >> $GITHUB_OUTPUT
+          fi

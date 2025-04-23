@@ -617,6 +617,7 @@ GameObject:
   m_Component:
   - component: {fileID: 595776739}
   - component: {fileID: 595776738}
+  - component: {fileID: 595776740}
   m_Layer: 0
   m_Name: Solution
   m_TagString: Untagged
@@ -655,6 +656,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &595776740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595776737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4d18f994c2cb51282484e339c69005, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _delegateInput: {fileID: 0}
+  _imageReadModeInput: {fileID: 0}
+  _runningModeInput: {fileID: 0}
+  _minHandDetectionConfidenceInput: {fileID: 0}
+  _minHandPresenceConfidenceInput: {fileID: 0}
+  _minTrackingConfidenceInput: {fileID: 0}
+  numHands: 2
 --- !u!1 &721726358
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,6 +811,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 512548756}
     m_Modifications:
+    - target: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3259285889726014650, guid: 5713b959e3c77a58fb258133fc8e4aef, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
