@@ -5,21 +5,18 @@ on: [push, pull_request]
 jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         targetPlatform:
-          - StandaloneOSX       # Build a macOS standalone (Intel 64-bit)
-          - StandaloneWindows   # Build a Windows standalone
-          - StandaloneWindows64 # Build a Windows 64-bit standalone
-          - StandaloneLinux64   # Build a Linux 64-bit standalone
-          - iOS                 # Build an iOS player
-          - Android             # Build an Android .apk standalone app
-          - WebGL               # Build a WebGL app
-
-    # Troca o runner para macos-latest só para iOS
-    runs-on: ${{ matrix.targetPlatform == 'iOS' && 'macos-latest' || 'ubuntu-latest' }}
-
+          - StandaloneOSX          # macOS standalone (Intel 64-bit)
+          - StandaloneWindows      # Windows standalone
+          - StandaloneWindows64    # Windows 64-bit standalone
+          - StandaloneLinux64      # Linux 64-bit standalone
+          - iOS                    # iOS player
+          - Android                # Android .apk
+          - WebGL                  # WebGL
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,18 +24,17 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Cache Library
+      - name: Restore Library cache
         uses: actions/cache@v3
         with:
           path: Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
 
-      - name: Free disk space (only on Android)
-        if: matrix.targetPlatform == 'Android'
+      - name: Free up disk space
         uses: jlumbroso/free-disk-space@v1.3.1
 
-      - name: Build project with Unity
+      - name: Build with Unity
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -46,9 +42,8 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: -logFile -
 
-      - name: Upload Build Artifact
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Build-${{ matrix.targetPlatform }}
