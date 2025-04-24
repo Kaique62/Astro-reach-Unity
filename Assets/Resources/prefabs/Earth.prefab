@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7977255081873491370
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.94
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12.57
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -807083163771274510, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1573329965428663438, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      propertyPath: m_Name
+      value: Earth
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1573329965428663438, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5465016979376849361}
+  m_SourcePrefab: {fileID: 3150474306388093854, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+--- !u!1 &8890510833564885284 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1573329965428663438, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
+  m_PrefabInstance: {fileID: 7977255081873491370}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &5465016979376849361
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890510833564885284}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6455626818131943963, guid: 69e021e334e6a7f428b270b3cb5ac37a, type: 3}
