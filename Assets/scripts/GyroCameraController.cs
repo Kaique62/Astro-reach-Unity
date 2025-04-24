@@ -1,36 +1,52 @@
 using UnityEngine;
 
-public class GyroCameraController : MonoBehaviour
+public class GiroscopioCamera : MonoBehaviour
 {
-    private Gyroscope gyro;
-    private bool gyroEnabled;
-    private Quaternion rotationFix;
+    private Gyroscope giroscopio;
+    private bool giroscopioAtivo;
+    private Quaternion ajuste;
+    private Quaternion offset = Quaternion.identity;
 
     void Start()
     {
-        gyroEnabled = EnableGyro();
-    }
-
-    bool EnableGyro()
-    {
         if (SystemInfo.supportsGyroscope)
         {
-            gyro = Input.gyro;
-            gyro.enabled = true;
+            giroscopio = Input.gyro;
+            giroscopio.enabled = true;
+            giroscopioAtivo = true;
 
-            // Corrige a rotação do giroscópio para o espaço da Unity
-            rotationFix = new Quaternion(0, 0, 1, 0);
-            return true;
+            ajuste = Quaternion.Euler(90f, 0f, 0f);
+            ResetarRotacao(); // Reseta ao iniciar, se quiser
         }
-        return false;
+        else
+        {
+            Debug.Log("Giroscópio não disponível neste dispositivo.");
+        }
     }
 
     void Update()
     {
-        if (gyroEnabled)
+        if (giroscopioAtivo)
         {
-            // Aplica a rotação do giroscópio à câmera
-            transform.localRotation = gyro.attitude * rotationFix;
+            Quaternion rotacaoGiroscopio = giroscopio.attitude;
+            Quaternion rotacaoConvertida = new Quaternion(-rotacaoGiroscopio.x, -rotacaoGiroscopio.y, rotacaoGiroscopio.z, rotacaoGiroscopio.w);
+
+            // Aplica a rotação relativa ao offset atual
+            transform.localRotation = ajuste * offset * rotacaoConvertida;
         }
+    }
+
+    public void ResetarRotacao()
+    {
+        if (!giroscopioAtivo) return;
+
+        Quaternion rotacaoAtual = new Quaternion(
+            -giroscopio.attitude.x,
+            -giroscopio.attitude.y,
+            giroscopio.attitude.z,
+            giroscopio.attitude.w
+        );
+
+        offset = Quaternion.Inverse(rotacaoAtual);
     }
 }

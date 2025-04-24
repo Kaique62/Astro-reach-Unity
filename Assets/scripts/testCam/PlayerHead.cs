@@ -1,36 +1,26 @@
 using UnityEngine;
 
-public class PlayerHead : MonoBehaviour
+public class TesteGiro : MonoBehaviour
 {
-    public float gyroSensitivity = 50f;
-    private Vector3 defaultPosition = new Vector3(0, 5, 0);
+    private Gyroscope giro;
 
     void Start()
     {
-        Input.gyro.enabled = true;
+        if (SystemInfo.supportsGyroscope)
+        {
+            giro = Input.gyro;
+            giro.enabled = true;
+            Debug.Log("Giroscópio ativado!");
+        }
+        else
+        {
+            Debug.Log("Este dispositivo não suporta giroscópio.");
+        }
     }
 
     void Update()
     {
-        // Mantém a posição fixa
-        transform.position = defaultPosition;
-
-        // Pega os dados do giroscópio
-        Vector3 gyro = Input.gyro.rotationRateUnbiased;
-
-        if (gyro != Vector3.zero)
-        {
-            // Aplica rotação com base no giroscópio
-            float rotX = -gyro.x * Time.deltaTime * gyroSensitivity;
-            float rotY = -gyro.y * Time.deltaTime * gyroSensitivity;
-
-            transform.Rotate(new Vector3(rotX, rotY, 0), Space.Self);
-        }
+        // Rotaciona o objeto conforme o giroscópio (modo bruto pra teste)
+        transform.rotation = new Quaternion(-giro.attitude.x, -giro.attitude.y, giro.attitude.z, giro.attitude.w);
     }
-
-    public void ResetRotation()
-    {
-        transform.rotation = Quaternion.identity;
-    }
-
 }
