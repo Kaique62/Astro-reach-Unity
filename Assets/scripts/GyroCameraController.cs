@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GiroscopioCamera : MonoBehaviour
+public class PlayerHead : MonoBehaviour
 {
     private Gyroscope giroscopio;
     private bool giroscopioAtivo;
@@ -16,7 +16,6 @@ public class GiroscopioCamera : MonoBehaviour
             giroscopioAtivo = true;
 
             ajuste = Quaternion.Euler(90f, 0f, 0f);
-            ResetarRotacao(); // Reseta ao iniciar, se quiser
         }
         else
         {
@@ -32,21 +31,7 @@ public class GiroscopioCamera : MonoBehaviour
             Quaternion rotacaoConvertida = new Quaternion(-rotacaoGiroscopio.x, -rotacaoGiroscopio.y, rotacaoGiroscopio.z, rotacaoGiroscopio.w);
 
             // Aplica a rotação relativa ao offset atual
-            transform.localRotation = ajuste * offset * rotacaoConvertida;
+            transform.localRotation = ajuste * rotacaoConvertida * offset;
         }
-    }
-
-    public void ResetarRotacao()
-    {
-        if (!giroscopioAtivo) return;
-
-        Quaternion rotacaoAtual = new Quaternion(
-            -giroscopio.attitude.x,
-            -giroscopio.attitude.y,
-            giroscopio.attitude.z,
-            giroscopio.attitude.w
-        );
-
-        offset = Quaternion.Inverse(rotacaoAtual);
     }
 }
