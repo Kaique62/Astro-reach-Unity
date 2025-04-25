@@ -3,62 +3,106 @@ using System.Collections.Generic;
 
 public class ProceduralSpawner : MonoBehaviour
 {
-    public string prefabFolder = "Prefabs";
-    public int quantidade = 10;
-    public float distanciaMinima = 1.5f;
-    public float campoDeVisaoGraus = 360f; // 360 = tudo, 90 = só frente
+    [Header("Configurações do Cilindro")]
+    public float raioCilindro = 5f;
+    public float alturaCilindro = 10f;
+    public float distanciaMinima = 2f;
+    public int quantidadeAsteroides = 30;
 
-    private List<GameObject> objetosGerados = new List<GameObject>();
-    private float raio, altura;
+    [Header("Referências")]
+    public GameObject terraPrefab;
+    public GameObject navePrefab;
+    public GameObject asteroidePrefab;
+
+    private List<GameObject> objetos = new List<GameObject>();
+    private Vector3 centro;
 
     void Start()
     {
-        MeshRenderer renderer = GetComponent<MeshRenderer>();
-        raio = transform.localScale.x * 0.5f;
-        altura = transform.localScale.y * 1f;
+        centro = transform.position;
+        GerarCena();
+    }
 
-        GameObject[] prefabs = Resources.LoadAll<GameObject>(prefabFolder);
-        if (prefabs.Length == 0)
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R)) ReiniciarCena();
+    }
+
+    void GerarCena()
+    {
+        LimparCena();
+
+        // 1. Gerar Terra
+        Vector3 posTerra = GerarPosicaoNaParede();
+        GameObject terra = Instantiate(terraPrefab, posTerra, Quaternion.identity);
+        objetos.Add(terra);
+
+        // 2. Gerar Nave
+        Vector3 posNave = CalcularPosicaoOposta(posTerra);
+        GameObject nave = Instantiate(navePrefab, posNave, Quaternion.identity);
+        objetos.Add(nave);
+
+        // 3. Gerar Asteroides
+        int asteroidesGerados = 0;
+        int tentativasMax = quantidadeAsteroides * 10;
+
+        while (asteroidesGerados < quantidadeAsteroides && tentativasMax-- > 0)
         {
-            Debug.LogError("Nenhum prefab encontrado em Resources/" + prefabFolder);
-            return;
-        }
+            Vector3 posAsteroide = GerarPosicaoNaParede();
 
-        int tentativasMax = 1000;
-        int gerados = 0;
-
-        while (gerados < quantidade && tentativasMax-- > 0)
-        {
-            Vector3 pos = GerarPosicaoAleatoria();
-            bool valido = true;
-
-            foreach (var obj in objetosGerados)
+            if (ValidarPosicao(posAsteroide))
             {
-                if (Vector3.Distance(pos, obj.transform.position) < distanciaMinima)
-                {
-                    valido = false;
-                    break;
-                }
-            }
-
-            if (valido)
-            {
-                GameObject prefabEscolhido = prefabs[Random.Range(0, prefabs.Length)];
-                GameObject instancia = Instantiate(prefabEscolhido, pos, Quaternion.identity);
-                objetosGerados.Add(instancia);
-                gerados++;
+                GameObject asteroide = Instantiate(asteroidePrefab, posAsteroide, Quaternion.identity);
+                objetos.Add(asteroide);
+                asteroidesGerados++;
             }
         }
     }
 
-    Vector3 GerarPosicaoAleatoria()
+    Vector3 GerarPosicaoNaParede()
     {
-        float angulo = Random.Range(-campoDeVisaoGraus / 2f, campoDeVisaoGraus / 2f) * Mathf.Deg2Rad;
-        float alturaY = Random.Range(-altura / 2f, altura / 2f);
+        float angulo = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+        float altura = Random.Range(-alturaCilindro / 2f, alturaCilindro / 2f);
 
-        float x = Mathf.Cos(angulo) * raio;
-        float z = Mathf.Sin(angulo) * raio;
+        return new Vector3(
+            Mathf.Cos(angulo) * raioCilindro,
+            altura,
+            Mathf.Sin(angulo) * raioCilindro
+        ) + centro;
+    }
 
-        return transform.position + new Vector3(x, alturaY, z);
+    Vector3 CalcularPosicaoOposta(Vector3 referencia)
+    {
+        Vector3 direcao = (referencia - centro).normalized;
+        return centro + (-direcao * raioCilindro) + new Vector3(0, referencia.y - centro.y, 0);
+    }
+
+    bool ValidarPosicao(Vector3 novaPosicao)
+    {
+        foreach (GameObject obj in objetos)
+        {
+            if (obj != null && Vector3.Distance(novaPosicao, obj.transform.position) < distanciaMinima)
+                return false;
+        }
+        return true;
+    }
+
+    void LimparCena()
+    {
+        // Destrói todas as instâncias geradas
+        foreach (GameObject obj in objetos)
+        {
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+        }
+        objetos.Clear();
+    }
+
+    void ReiniciarCena()
+    {
+        LimparCena();
+        GerarCena();
     }
 }
