@@ -106,7 +106,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
             if (status != _lastStatus)
             {
-                Debug.Log(status);
+                //Debug.Log(status);
                 _lastStatus = status;
             }
         }
