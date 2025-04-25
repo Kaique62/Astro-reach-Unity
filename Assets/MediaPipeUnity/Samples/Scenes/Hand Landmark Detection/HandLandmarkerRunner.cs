@@ -1,12 +1,10 @@
-// Copyright (c) 2023 homuler
-// Use of this source code is governed by an MIT-style license
-
 using System.Collections;
 using System.Collections.Generic;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Mediapipe;
+using TMPro;
 
 namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 {
@@ -16,9 +14,21 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
         private Experimental.TextureFramePool _textureFramePool;
         private string _lastStatus = "";
+        private string _statusToDisplay = "";
         private ImageSource _imageSource;
 
+        [SerializeField] public TMP_Text _textField;
+
         public readonly HandLandmarkDetectionConfig config = new HandLandmarkDetectionConfig();
+
+        private void Update()
+        {
+            if (!string.IsNullOrEmpty(_statusToDisplay))
+            {
+                _textField.text = _statusToDisplay;
+                _statusToDisplay = "";
+            }
+        }
 
         private List<string> DetectGestures(IReadOnlyList<Mediapipe.NormalizedLandmark> landmarks)
         {
@@ -99,6 +109,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
                         var gestures = DetectGestures(protoLandmarks);
 
                         status = $"Hand Position: {position}\nGestures: {(gestures.Count > 0 ? string.Join(", ", gestures) : "None")}";
+                        _statusToDisplay = status;
                         break;
                     }
                 }
