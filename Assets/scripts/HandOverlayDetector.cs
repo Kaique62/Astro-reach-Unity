@@ -1,37 +1,73 @@
+using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
 
-public class HandLandmarkManager : MonoBehaviour
+public class HandOverlayDetector : MonoBehaviour
 {
-    // Retorna o Transform do landmark (ponto) OU null se a mão não existir
-    public Transform TryGetHandLandmarkPoint(int pointIndex)
-    {
-        // 1. Verifica se a mão está na cena
-        Transform hand = GameObject.Find("Canvas/Hand")?.transform;
-        if (hand == null) return null; // Mão não detectada
+    public LayerMask detectionLayer;
+    public float rayLength = 0.1f;
 
-        // 2. Navega até o Point List Annotation (com verificações)
-        Transform annotationLayer = hand.Find("AnnotationLayer");
-        Transform multiHandList = annotationLayer?.Find("Multi HandLandmarkList Annotation");
-        Transform handClone = multiHandList?.Find("HandLandmarkList Annotation(Clone)");
-        Transform pointList = handClone?.Find("Point List Annotation");
+    [Tooltip("Fixed ray direction in world space (default: (0, 0, 1))")]
+    public Vector3 rayDirection = new Vector3(0f, 0f, 1f);
 
-        if (pointList == null || pointIndex < 0 || pointIndex >= pointList.childCount)
-        {
-            Debug.LogWarning("Landmark não disponível. Verifique índices ou hierarquia.");
-            return null;
-        }
+    [Tooltip("Reference to HandLandmarkerRunner")]
+    public HandLandmarkerRunner gestureDetectorScript;  // Drag the HandLandmarkerRunner script here
 
-        return pointList.GetChild(pointIndex);
-    }
+    private Transform middleMCP, ringMCP;
 
-    // Exemplo de uso (seguro para Update)
     void Update()
     {
-        Transform landmark = TryGetHandLandmarkPoint(8); // Ponta do dedo indicador
-        if (landmark != null)
+        if (middleMCP == null || ringMCP == null)
+            FindHandLandmarks();
+
+        // Check gesture and draw rays only if "Closed Hand" gesture is detected
+        if (middleMCP && ringMCP && IsHandGesture("Closed Hand"))
         {
-            // Faz algo com o landmark (ex: mover um objeto)
-            Debug.Log($"Posição do landmark: {landmark.position}");
+            CheckRayHit(middleMCP, "Middle MCP");
+            CheckRayHit(ringMCP, "Ring MCP");
         }
+    }
+
+    void FindHandLandmarks()
+    {
+        var handList = GameObject.Find("Multi HandLandmarkList Annotation");
+        if (handList == null) return;
+
+        var pointLists = handList.GetComponentsInChildren<Transform>(true);
+        foreach (var child in pointLists)
+        {
+            if (child.name.StartsWith("Point List Annotation") && child.childCount >= 14)
+            {
+                middleMCP = child.GetChild(9);  // Middle MCP
+                ringMCP = child.GetChild(13);   // Ring MCP
+                break;
+            }
+        }
+    }
+
+    void CheckRayHit(Transform joint, string jointName)
+    {
+        Vector3 origin = joint.position;
+        Vector3 dir = rayDirection.normalized;
+
+        // Check if the ray hits the "Nave" object
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayLength, detectionLayer))
+        {
+            if (hit.collider.CompareTag("Nave"))
+            {
+                // If hand is closed and over a Nave object, log a warning
+                if (IsHandGesture("Closed Hand"))
+                {
+                    Debug.LogWarning($"{jointName} is over a 'Nave' object while the hand is closed: {hit.collider.name}");
+                }
+            }
+        }
+    }
+
+    bool IsHandGesture(string targetGesture)
+    {
+        if (gestureDetectorScript == null) return false;
+
+        // Check if the gesture is detected
+        return gestureDetectorScript.CurrentGestures.Contains(targetGesture);
     }
 }

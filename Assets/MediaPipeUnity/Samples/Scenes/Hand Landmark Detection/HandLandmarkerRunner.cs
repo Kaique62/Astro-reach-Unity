@@ -21,6 +21,9 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
         public readonly HandLandmarkDetectionConfig config = new HandLandmarkDetectionConfig();
 
+        // Public property to expose the current detected gestures
+        public List<string> CurrentGestures { get; private set; } = new List<string>();
+
         private void Update()
         {
             if (!string.IsNullOrEmpty(_statusToDisplay))
@@ -108,6 +111,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
                         var protoLandmarks = ConvertToProto(hand.landmarks);
                         var gestures = DetectGestures(protoLandmarks);
 
+                        CurrentGestures = gestures;  // Store detected gestures in the public property
                         status = $"Hand Position: {position}\nGestures: {(gestures.Count > 0 ? string.Join(", ", gestures) : "None")}";
                         _statusToDisplay = status;
                         break;
