@@ -4,26 +4,43 @@ using UnityEngine;
 public class HandOverlayDetector : MonoBehaviour
 {
     public LayerMask detectionLayer;
-    public float rayLength = 0.1f;
+    public float screenDistanceThreshold = 100f;
+    public float maxAllowedVelocity = 3000f; // Pixels per second
+    public HandLandmarkerRunner gestureDetector;
 
-    [Tooltip("Fixed ray direction in world space (default: (0, 0, 1))")]
-    public Vector3 rayDirection = new Vector3(0f, 0f, 1f);
+    public RectTransform canvasRectTransform; // Canvas RectTransform for bounding
+    public Vector3 landmarkOffset = Vector3.zero;
+    public Vector3 positionOffset = Vector3.zero;
+    public float constantZDistance = 299f;
 
-    [Tooltip("Reference to HandLandmarkerRunner")]
-    public HandLandmarkerRunner gestureDetectorScript;  // Drag the HandLandmarkerRunner script here
+    private Transform middleMCP;
+    private GameObject currentDraggedObject;
+    private bool isDragging = false;
 
-    private Transform middleMCP, ringMCP;
+    private Vector3 lastScreenPosition;
+    private float lastTime;
 
     void Update()
     {
-        if (middleMCP == null || ringMCP == null)
+        if (middleMCP == null)
             FindHandLandmarks();
 
-        // Check gesture and draw rays only if "Closed Hand" gesture is detected
-        if (middleMCP && ringMCP && IsHandGesture("Closed Hand"))
+        if (middleMCP != null)
         {
-            CheckRayHit(middleMCP, "Middle MCP");
-            CheckRayHit(ringMCP, "Ring MCP");
+            Check2DOverlay();
+
+            if (currentDraggedObject != null)
+            {
+                if (IsHandMovingTooFast())
+                {
+                    Debug.Log("[Debug] Hand moved too fast — cancelling drag.");
+                    isDragging = false;
+                    currentDraggedObject = null;
+                    return;
+                }
+
+                FollowHandPosition();
+            }
         }
     }
 
@@ -35,39 +52,73 @@ public class HandOverlayDetector : MonoBehaviour
         var pointLists = handList.GetComponentsInChildren<Transform>(true);
         foreach (var child in pointLists)
         {
-            if (child.name.StartsWith("Point List Annotation") && child.childCount >= 14)
+            if (child.name.StartsWith("Point List Annotation") && child.childCount >= 10)
             {
-                middleMCP = child.GetChild(9);  // Middle MCP
-                ringMCP = child.GetChild(13);   // Ring MCP
+                middleMCP = child.GetChild(9);
                 break;
             }
         }
     }
 
-    void CheckRayHit(Transform joint, string jointName)
+    void Check2DOverlay()
     {
-        Vector3 origin = joint.position;
-        Vector3 dir = rayDirection.normalized;
+        if (Camera.main == null || gestureDetector == null) return;
 
-        // Check if the ray hits the "Nave" object
-        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayLength, detectionLayer))
+        Vector3 handScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position);
+        GameObject nave = GameObject.FindGameObjectWithTag("Nave");
+        if (nave != null)
         {
-            if (hit.collider.CompareTag("Nave"))
+            Vector3 naveScreenPos = Camera.main.WorldToScreenPoint(nave.transform.position);
+            float distance = Vector2.Distance(handScreenPos, naveScreenPos);
+
+            bool isClosedHand = gestureDetector._textField.text.Contains("Closed Hand");
+
+            if (distance < screenDistanceThreshold && isClosedHand)
             {
-                // If hand is closed and over a Nave object, log a warning
-                if (IsHandGesture("Closed Hand"))
-                {
-                    Debug.LogWarning($"{jointName} is over a 'Nave' object while the hand is closed: {hit.collider.name}");
-                }
+                Debug.Log("[Debug] 2D overlap and 'Closed Hand' detected — starting drag.");
+                currentDraggedObject = nave;
+                isDragging = true;
+                lastScreenPosition = handScreenPos;
+                lastTime = Time.time;
+            }
+            else if (!isClosedHand)
+            {
+                if (currentDraggedObject != null)
+                    Debug.Log("[Debug] Hand opened — stopping drag.");
+                currentDraggedObject = null;
+                isDragging = false;
             }
         }
     }
 
-    bool IsHandGesture(string targetGesture)
+    bool IsHandMovingTooFast()
     {
-        if (gestureDetectorScript == null) return false;
+        Vector3 currentScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position);
+        float currentTime = Time.time;
 
-        // Check if the gesture is detected
-        return gestureDetectorScript.CurrentGestures.Contains(targetGesture);
+        float deltaTime = currentTime - lastTime;
+        if (deltaTime <= 0) return false;
+
+        float velocity = Vector3.Distance(currentScreenPos, lastScreenPosition) / deltaTime;
+
+        lastScreenPosition = currentScreenPos;
+        lastTime = currentTime;
+
+        return velocity > maxAllowedVelocity;
+    }
+
+    void FollowHandPosition()
+    {
+        Vector3 handScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position + landmarkOffset);
+        handScreenPos += positionOffset;
+
+        Vector2 canvasSize = canvasRectTransform.rect.size;
+        handScreenPos.x = Mathf.Clamp(handScreenPos.x, 0, canvasSize.x);
+        handScreenPos.y = Mathf.Clamp(handScreenPos.y, 0, canvasSize.y);
+
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(handScreenPos.x, handScreenPos.y, constantZDistance));
+        currentDraggedObject.transform.position = worldPos;
+
+        Debug.Log($"[Debug] Object dragged to: {worldPos}");
     }
 }
