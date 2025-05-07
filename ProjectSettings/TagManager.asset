@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Global Resource
   - Nave
+  - Planeta
+  - Asteroide
   layers:
   - Default
   - TransparentFX

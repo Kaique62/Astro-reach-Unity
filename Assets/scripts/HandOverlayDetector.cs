@@ -5,10 +5,10 @@ public class HandOverlayDetector : MonoBehaviour
 {
     public LayerMask detectionLayer;
     public float screenDistanceThreshold = 100f;
-    public float maxAllowedVelocity = 3000f; // Pixels per second
+    public float maxAllowedVelocity = 3000f;
     public HandLandmarkerRunner gestureDetector;
 
-    public RectTransform canvasRectTransform; // Canvas RectTransform for bounding
+    public RectTransform canvasRectTransform;
     public Vector3 landmarkOffset = Vector3.zero;
     public Vector3 positionOffset = Vector3.zero;
     public float constantZDistance = 299f;
@@ -33,7 +33,6 @@ public class HandOverlayDetector : MonoBehaviour
             {
                 if (IsHandMovingTooFast())
                 {
-                    Debug.Log("[Debug] Hand moved too fast — cancelling drag.");
                     isDragging = false;
                     currentDraggedObject = null;
                     return;
@@ -75,7 +74,6 @@ public class HandOverlayDetector : MonoBehaviour
 
             if (distance < screenDistanceThreshold && isClosedHand)
             {
-                Debug.Log("[Debug] 2D overlap and 'Closed Hand' detected — starting drag.");
                 currentDraggedObject = nave;
                 isDragging = true;
                 lastScreenPosition = handScreenPos;
@@ -83,8 +81,6 @@ public class HandOverlayDetector : MonoBehaviour
             }
             else if (!isClosedHand)
             {
-                if (currentDraggedObject != null)
-                    Debug.Log("[Debug] Hand opened — stopping drag.");
                 currentDraggedObject = null;
                 isDragging = false;
             }
@@ -118,7 +114,5 @@ public class HandOverlayDetector : MonoBehaviour
 
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(handScreenPos.x, handScreenPos.y, constantZDistance));
         currentDraggedObject.transform.position = worldPos;
-
-        Debug.Log($"[Debug] Object dragged to: {worldPos}");
     }
 }
