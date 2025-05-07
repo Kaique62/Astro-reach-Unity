@@ -33,7 +33,7 @@ public class ProceduralSpawner : MonoBehaviour
         LimparCena();
 
         // 1. Gerar Terra
-        Vector3 posTerra = GerarPosicaoNaParede();
+        Vector3 posTerra = GerarPosicaoNaEsfera();
         GameObject terra = Instantiate(terraPrefab, posTerra, Quaternion.identity);
         objetos.Add(terra);
 
@@ -48,7 +48,7 @@ public class ProceduralSpawner : MonoBehaviour
 
         while (asteroidesGerados < quantidadeAsteroides && tentativasMax-- > 0)
         {
-            Vector3 posAsteroide = GerarPosicaoNaParede();
+            Vector3 posAsteroide = GerarPosicaoNaEsfera();
 
             if (ValidarPosicao(posAsteroide))
             {
@@ -59,22 +59,26 @@ public class ProceduralSpawner : MonoBehaviour
         }
     }
 
-    Vector3 GerarPosicaoNaParede()
+    Vector3 GerarPosicaoNaEsfera()
     {
-        float angulo = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-        float altura = Random.Range(-alturaCilindro / 2f, alturaCilindro / 2f);
+        // Ângulo horizontal (longitude): 0 a 360 graus
+        float anguloHorizontal = Random.Range(0f, 360f) * Mathf.Deg2Rad;
 
-        return new Vector3(
-            Mathf.Cos(angulo) * raioCilindro,
-            altura,
-            Mathf.Sin(angulo) * raioCilindro
-        ) + centro;
+        // Ângulo vertical (latitude): limitar entre 30° e 150° para evitar os polos
+        float anguloVertical = Random.Range(54f, 123f) * Mathf.Deg2Rad;
+
+        // Conversão de coordenadas esféricas para cartesianas
+        float x = raioCilindro * Mathf.Sin(anguloVertical) * Mathf.Cos(anguloHorizontal);
+        float y = raioCilindro * Mathf.Cos(anguloVertical); // altura
+        float z = raioCilindro * Mathf.Sin(anguloVertical) * Mathf.Sin(anguloHorizontal);
+
+        return centro + new Vector3(x, y, z);
     }
 
     Vector3 CalcularPosicaoOposta(Vector3 referencia)
     {
         Vector3 direcao = (referencia - centro).normalized;
-        return centro + (-direcao * raioCilindro) + new Vector3(0, referencia.y - centro.y, 0);
+        return centro - direcao * raioCilindro; // sem ajuste manual de Y
     }
 
     bool ValidarPosicao(Vector3 novaPosicao)
