@@ -66,7 +66,6 @@ public static class HandGestureDetector
 
     private enum Finger { Index, Middle, Ring, Pinky }
 
-
         #region New Gestures
         public static bool IsOpenHand(IReadOnlyList<NormalizedLandmark> landmarks)
         {

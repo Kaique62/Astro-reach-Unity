@@ -1,19 +1,20 @@
 using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class HandOverlayDetector : MonoBehaviour
 {
     public LayerMask detectionLayer;
     public float screenDistanceThreshold = 100f;
-    public float maxAllowedVelocity = 3000f; // Pixels per second
+    public float maxAllowedVelocity = 3000f;
     public HandLandmarkerRunner gestureDetector;
 
-    public RectTransform canvasRectTransform; // Canvas RectTransform for bounding
+    public RectTransform canvasRectTransform;
     public Vector3 landmarkOffset = Vector3.zero;
     public Vector3 positionOffset = Vector3.zero;
     public float constantZDistance = 299f;
 
-    private Transform middleMCP;
+    private List<Transform> middleMCPs = new List<Transform>();
     private GameObject currentDraggedObject;
     private bool isDragging = false;
 
@@ -22,16 +23,15 @@ public class HandOverlayDetector : MonoBehaviour
 
     void Update()
     {
-        if (middleMCP == null)
-            FindHandLandmarks();
+        FindHandLandmarks();
 
-        if (middleMCP != null)
+        foreach (var middleMCP in middleMCPs)
         {
-            Check2DOverlay();
+            Vector3 handScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position);
 
-            if (currentDraggedObject != null)
+            if (currentDraggedObject != null && isDragging)
             {
-                if (IsHandMovingTooFast())
+                if (IsHandMovingTooFast(middleMCP))
                 {
                     Debug.Log("[Debug] Hand moved too fast — cancelling drag.");
                     isDragging = false;
@@ -39,7 +39,11 @@ public class HandOverlayDetector : MonoBehaviour
                     return;
                 }
 
-                FollowHandPosition();
+                FollowHandPosition(middleMCP);
+            }
+            else
+            {
+                TryStartDrag(middleMCP, handScreenPos);
             }
         }
     }
@@ -50,21 +54,21 @@ public class HandOverlayDetector : MonoBehaviour
         if (handList == null) return;
 
         var pointLists = handList.GetComponentsInChildren<Transform>(true);
+        middleMCPs.Clear();
+
         foreach (var child in pointLists)
         {
             if (child.name.StartsWith("Point List Annotation") && child.childCount >= 10)
             {
-                middleMCP = child.GetChild(9);
-                break;
+                middleMCPs.Add(child.GetChild(9)); // ponto 9 = Middle MCP
             }
         }
     }
 
-    void Check2DOverlay()
+    void TryStartDrag(Transform middleMCP, Vector3 handScreenPos)
     {
         if (Camera.main == null || gestureDetector == null) return;
 
-        Vector3 handScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position);
         GameObject nave = GameObject.FindGameObjectWithTag("Nave");
         if (nave != null)
         {
@@ -81,33 +85,24 @@ public class HandOverlayDetector : MonoBehaviour
                 lastScreenPosition = handScreenPos;
                 lastTime = Time.time;
             }
-            else if (!isClosedHand)
-            {
-                if (currentDraggedObject != null)
-                    Debug.Log("[Debug] Hand opened — stopping drag.");
-                currentDraggedObject = null;
-                isDragging = false;
-            }
         }
     }
 
-    bool IsHandMovingTooFast()
+    bool IsHandMovingTooFast(Transform middleMCP)
     {
         Vector3 currentScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position);
         float currentTime = Time.time;
-
         float deltaTime = currentTime - lastTime;
         if (deltaTime <= 0) return false;
 
         float velocity = Vector3.Distance(currentScreenPos, lastScreenPosition) / deltaTime;
-
         lastScreenPosition = currentScreenPos;
         lastTime = currentTime;
 
         return velocity > maxAllowedVelocity;
     }
 
-    void FollowHandPosition()
+    void FollowHandPosition(Transform middleMCP)
     {
         Vector3 handScreenPos = Camera.main.WorldToScreenPoint(middleMCP.position + landmarkOffset);
         handScreenPos += positionOffset;

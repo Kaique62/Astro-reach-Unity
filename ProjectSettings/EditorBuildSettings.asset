@@ -8,12 +8,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/VRcamTest.unity
     guid: 6a209fc2ace29924780296ffcec43371
   - enabled: 0
     path: Assets/Scenes/Astroreach.unity
     guid: 32ae8f607e90e8448a8ba5e84129b050
+  - enabled: 1
+    path: Assets/Scenes/track2cam.unity
+    guid: 0daedd372064d6844b032d6ca05dba0d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 73eece15312ed49449ee4fefc57e62af, type: 2}
