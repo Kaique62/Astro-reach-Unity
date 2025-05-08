@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 public class ProceduralSpawner : MonoBehaviour
 {
-    [Header("Configurações do Cilindro")]
+    [Header("Configuracoes do Cilindro")]
     public float raioCilindro = 5f;
     public float alturaCilindro = 10f;
     public float distanciaMinima = 1f;
     public int quantidadeAsteroides = 35;
 
-    [Header("Referências")]
+    [Header("Referencias")]
     public GameObject terraPrefab;
     public GameObject navePrefab;
     public GameObject asteroidePrefab;
@@ -36,11 +36,13 @@ public class ProceduralSpawner : MonoBehaviour
         // 1. Gerar Terra
         Vector3 posTerra = GerarPosicaoNaEsfera(60f, 120f);
         GameObject terra = Instantiate(terraPrefab, posTerra, Quaternion.identity, ElementosGerados);
+        terra.tag = "Planeta";
         objetos.Add(terra);
 
-        // 2. Gerar Nave na posição oposta à Terra
+        // 2. Gerar Nave na posicao oposta a Terra
         Vector3 posNave = CalcularPosicaoOposta(posTerra);
         GameObject nave = Instantiate(navePrefab, posNave, Quaternion.identity, ElementosGerados);
+        nave.tag = "Nave";
         objetos.Add(nave);
 
         // 3. Gerar Asteroides (em toda a esfera)

@@ -22,7 +22,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         public readonly HandLandmarkDetectionConfig config = new HandLandmarkDetectionConfig();
 
         // Public property to expose the current detected gestures
-        public List<string> CurrentGestures { get; private set; } = new List<string>();
+        public string CurrentGesture { get; private set; } = "None";
 
         private void Update()
         {
@@ -33,43 +33,47 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             }
         }
 
-        private List<string> DetectGestures(IReadOnlyList<Mediapipe.NormalizedLandmark> landmarks)
+        private string DetectGesture(IReadOnlyList<Mediapipe.NormalizedLandmark> landmarks)
         {
-            var gestures = new List<string>();
+            if (landmarks == null || landmarks.Count < 21) return "None";
 
-            if (landmarks == null || landmarks.Count < 21) return gestures;
-
+            // Get relevant landmarks
             var thumbTip = landmarks[4];
+            var indexTip = landmarks[8];
+            var middleTip = landmarks[12];
+            var ringTip = landmarks[16];
+            var pinkyTip = landmarks[20];
+            
             var thumbIp = landmarks[3];
-            bool thumbUp = thumbTip.Y < thumbIp.Y;
+            var indexPip = landmarks[6];
+            var middlePip = landmarks[10];
+            var ringPip = landmarks[14];
+            var pinkyPip = landmarks[18];
 
-            bool indexUp = landmarks[8].Y < landmarks[6].Y;
-            bool middleUp = landmarks[12].Y < landmarks[10].Y;
-            bool ringUp = landmarks[16].Y < landmarks[14].Y;
-            bool pinkyUp = landmarks[20].Y < landmarks[18].Y;
+            // Check finger states (true = extended, false = bent)
+            bool thumbExtended = thumbTip.Y < thumbIp.Y;
+            bool indexExtended = indexTip.Y < indexPip.Y;
+            bool middleExtended = middleTip.Y < middlePip.Y;
+            bool ringExtended = ringTip.Y < ringPip.Y;
+            bool pinkyExtended = pinkyTip.Y < pinkyPip.Y;
 
-            if (thumbUp && !indexUp && !middleUp && !ringUp && !pinkyUp)
+            // Open Hand gesture (all fingers extended)
+            if (indexExtended && middleExtended && ringExtended && pinkyExtended)
             {
-                gestures.Add("Thumbs Up");
+                return "Open Hand";
             }
-            if (!thumbUp && indexUp && middleUp && !ringUp && !pinkyUp)
+            // Closed Hand gesture (all fingers closed)
+            else if (!indexExtended && !middleExtended && !ringExtended && !pinkyExtended)
             {
-                gestures.Add("Victory");
+                return "Closed Hand";
             }
-            if (indexUp && middleUp && ringUp && pinkyUp)
+            // Pointer gesture (index extended, others closed)
+            else if (indexExtended && !middleExtended && !ringExtended && !pinkyExtended)
             {
-                gestures.Add("Open Hand");
-            }
-            if (!indexUp && !middleUp && !ringUp && !pinkyUp && thumbUp)
-            {
-                gestures.Add("Closed Hand");
-            }
-            if (!indexUp && !middleUp && !ringUp && !pinkyUp && !thumbUp)
-            {
-                gestures.Add("Fist");
+                return "Pointer";
             }
 
-            return gestures;
+            return "None";
         }
 
         private List<Mediapipe.NormalizedLandmark> ConvertToProto(List<Mediapipe.Tasks.Components.Containers.NormalizedLandmark> landmarks)
@@ -98,30 +102,28 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         private void UpdateGestureStatus(HandLandmarkerResult result)
         {
             string status = "No hands detected";
+            CurrentGesture = "None";
 
             if (result.handLandmarks != null && result.handLandmarks.Count > 0)
             {
-                foreach (var hand in result.handLandmarks)
+                // Only process the first detected hand
+                var hand = result.handLandmarks[0];
+                if (hand.landmarks.Count >= 21)
                 {
-                    if (hand.landmarks.Count >= 21)
-                    {
-                        var wrist = hand.landmarks[0];
-                        var position = $"X: {wrist.x:0.##}, Y: {wrist.y:0.##}";
+                    var wrist = hand.landmarks[0];
+                    var position = $"X: {wrist.x:0.##}, Y: {wrist.y:0.##}";
 
-                        var protoLandmarks = ConvertToProto(hand.landmarks);
-                        var gestures = DetectGestures(protoLandmarks);
+                    var protoLandmarks = ConvertToProto(hand.landmarks);
+                    var gesture = DetectGesture(protoLandmarks);
 
-                        CurrentGestures = gestures;  // Store detected gestures in the public property
-                        status = $"Hand Position: {position}\nGestures: {(gestures.Count > 0 ? string.Join(", ", gestures) : "None")}";
-                        _statusToDisplay = status;
-                        break;
-                    }
+                    CurrentGesture = gesture;  // Store detected gesture in the public property
+                    status = $"Hand Position: {position}\nGesture: {gesture}";
+                    _statusToDisplay = status;
                 }
             }
 
             if (status != _lastStatus)
             {
-                //Debug.Log(status);
                 _lastStatus = status;
             }
         }
@@ -129,6 +131,9 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         protected override IEnumerator Run()
         {
             Debug.Log($"Initializing Hand Landmarker with {config.NumHands} hands");
+
+            // Force single hand detection
+            config.NumHands = 1;
 
             yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 

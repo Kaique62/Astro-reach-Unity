@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Astroreach.unity
     guid: 32ae8f607e90e8448a8ba5e84129b050
   - enabled: 1
-    path: Assets/Scenes/track2cam.unity
+    path: Assets/Scenes/RealMainScene.unity
     guid: 0daedd372064d6844b032d6ca05dba0d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
