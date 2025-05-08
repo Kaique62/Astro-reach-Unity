@@ -742,6 +742,37 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &1394819609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1394819610}
+  m_Layer: 0
+  m_Name: ElementosGerados
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1394819610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394819609}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.12, y: 4.81, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1732153735
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,9 +809,10 @@ MonoBehaviour:
   alturaCilindro: 5
   distanciaMinima: 5
   quantidadeAsteroides: 20
-  terraPrefab: {fileID: 8890510833564885284, guid: 22275c3454c1e8b4aa9847366ce46822, type: 3}
-  navePrefab: {fileID: 56203241707369367, guid: 1187d1a1f67bfd4468ee977b0182d86b, type: 3}
-  asteroidePrefab: {fileID: 6293144158027036440, guid: e1e6a6514974af54d9d6ff964979b418, type: 3}
+  terraPrefab: {fileID: 1953047414906072648, guid: e75ff7015430c2944a8dde0c887ab6a3, type: 3}
+  navePrefab: {fileID: 5483349065108667987, guid: bba76a394a184164289cd0f5ac1d3c12, type: 3}
+  asteroidePrefab: {fileID: 2576522843621581219, guid: 427a07ed8e59c074bb2ff05428b6d67a, type: 3}
+  ElementosGerados: {fileID: 1394819610}
 --- !u!64 &1732153737
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1136,3 +1168,4 @@ SceneRoots:
   - {fileID: 1287654615}
   - {fileID: 113370923}
   - {fileID: 1732153740}
+  - {fileID: 1394819610}
