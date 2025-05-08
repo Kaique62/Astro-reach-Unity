@@ -6,13 +6,14 @@ public class ProceduralSpawner : MonoBehaviour
     [Header("Configurações do Cilindro")]
     public float raioCilindro = 5f;
     public float alturaCilindro = 10f;
-    public float distanciaMinima = 2f;
-    public int quantidadeAsteroides = 30;
+    public float distanciaMinima = 1f;
+    public int quantidadeAsteroides = 35;
 
     [Header("Referências")]
     public GameObject terraPrefab;
     public GameObject navePrefab;
     public GameObject asteroidePrefab;
+    public Transform ElementosGerados;
 
     private List<GameObject> objetos = new List<GameObject>();
     private Vector3 centro;
@@ -33,43 +34,39 @@ public class ProceduralSpawner : MonoBehaviour
         LimparCena();
 
         // 1. Gerar Terra
-        Vector3 posTerra = GerarPosicaoNaEsfera();
-        GameObject terra = Instantiate(terraPrefab, posTerra, Quaternion.identity);
+        Vector3 posTerra = GerarPosicaoNaEsfera(60f, 120f);
+        GameObject terra = Instantiate(terraPrefab, posTerra, Quaternion.identity, ElementosGerados);
         objetos.Add(terra);
 
-        // 2. Gerar Nave
+        // 2. Gerar Nave na posição oposta à Terra
         Vector3 posNave = CalcularPosicaoOposta(posTerra);
-        GameObject nave = Instantiate(navePrefab, posNave, Quaternion.identity);
+        GameObject nave = Instantiate(navePrefab, posNave, Quaternion.identity, ElementosGerados);
         objetos.Add(nave);
 
-        // 3. Gerar Asteroides
+        // 3. Gerar Asteroides (em toda a esfera)
         int asteroidesGerados = 0;
         int tentativasMax = quantidadeAsteroides * 10;
 
         while (asteroidesGerados < quantidadeAsteroides && tentativasMax-- > 0)
         {
-            Vector3 posAsteroide = GerarPosicaoNaEsfera();
+            Vector3 posAsteroide = GerarPosicaoNaEsfera(0f, 180f); // esfera completa
 
             if (ValidarPosicao(posAsteroide))
             {
-                GameObject asteroide = Instantiate(asteroidePrefab, posAsteroide, Quaternion.identity);
+                GameObject asteroide = Instantiate(asteroidePrefab, posAsteroide, Quaternion.identity, ElementosGerados);
                 objetos.Add(asteroide);
                 asteroidesGerados++;
             }
         }
     }
 
-    Vector3 GerarPosicaoNaEsfera()
+    Vector3 GerarPosicaoNaEsfera(float latitudeMin, float latitudeMax)
     {
-        // Ângulo horizontal (longitude): 0 a 360 graus
         float anguloHorizontal = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+        float anguloVertical = Random.Range(latitudeMin, latitudeMax) * Mathf.Deg2Rad;
 
-        // Ângulo vertical (latitude): limitar entre 30° e 150° para evitar os polos
-        float anguloVertical = Random.Range(54f, 123f) * Mathf.Deg2Rad;
-
-        // Conversão de coordenadas esféricas para cartesianas
         float x = raioCilindro * Mathf.Sin(anguloVertical) * Mathf.Cos(anguloHorizontal);
-        float y = raioCilindro * Mathf.Cos(anguloVertical); // altura
+        float y = raioCilindro * Mathf.Cos(anguloVertical);
         float z = raioCilindro * Mathf.Sin(anguloVertical) * Mathf.Sin(anguloHorizontal);
 
         return centro + new Vector3(x, y, z);
@@ -78,7 +75,7 @@ public class ProceduralSpawner : MonoBehaviour
     Vector3 CalcularPosicaoOposta(Vector3 referencia)
     {
         Vector3 direcao = (referencia - centro).normalized;
-        return centro - direcao * raioCilindro; // sem ajuste manual de Y
+        return centro - direcao * raioCilindro;
     }
 
     bool ValidarPosicao(Vector3 novaPosicao)
@@ -93,7 +90,6 @@ public class ProceduralSpawner : MonoBehaviour
 
     void LimparCena()
     {
-        // Destrói todas as instâncias geradas
         foreach (GameObject obj in objetos)
         {
             if (obj != null)
