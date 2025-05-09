@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Earth
       objectReference: {fileID: 0}
+    - target: {fileID: 1573329965428663438, guid: 0cbd9e1af35c6e948b6c366cf205d891, type: 3}
+      propertyPath: m_TagString
+      value: Planeta
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -71,6 +75,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1573329965428663438, guid: 0cbd9e1af35c6e948b6c366cf205d891, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3049362127046956416}
+    - targetCorrespondingSourceObject: {fileID: 1573329965428663438, guid: 0cbd9e1af35c6e948b6c366cf205d891, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5939904532539270949}
   m_SourcePrefab: {fileID: 3150474306388093854, guid: 0cbd9e1af35c6e948b6c366cf205d891, type: 3}
 --- !u!1 &1953047414906072648 stripped
 GameObject:
@@ -100,3 +107,25 @@ MonoBehaviour:
   loopScale: 0
   loopScaleAmplitude: {x: 0.2, y: 0.2, z: 0.2}
   loopScaleSpeed: 1
+--- !u!64 &5939904532539270949
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953047414906072648}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6455626818131943963, guid: 0cbd9e1af35c6e948b6c366cf205d891, type: 3}

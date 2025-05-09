@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Asteroid
       objectReference: {fileID: 0}
+    - target: {fileID: 5108196334546607294, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
+      propertyPath: m_TagString
+      value: Asteroide
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -71,6 +75,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5108196334546607294, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6441643698390515081}
+    - targetCorrespondingSourceObject: {fileID: 5108196334546607294, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6660550840212857162}
   m_SourcePrefab: {fileID: 3150474306388093854, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
 --- !u!1 &2576522843621581219 stripped
 GameObject:
@@ -95,6 +102,30 @@ MonoBehaviour:
   enableVerticalMovement: 1
   movementAmplitude: -0.2
   movementSpeed: 1
-  enableScaling: 0
-  scaleAmplitude: {x: 0.5, y: 0.5, z: 0.5}
-  scaleSpeed: 1
+  playScaleFadeIn: 1
+  scaleFadeInDuration: 2
+  loopScale: 0
+  loopScaleAmplitude: {x: 0.2, y: 0.2, z: 0.2}
+  loopScaleSpeed: 1
+--- !u!64 &6660550840212857162
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2576522843621581219}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4014920351718632021, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
