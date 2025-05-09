@@ -35,7 +35,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
         private string DetectGesture(IReadOnlyList<Mediapipe.NormalizedLandmark> landmarks)
         {
-            if (landmarks == null || landmarks.Count < 21) return "None";
+            if (landmarks == null) return "None";
 
             // Get relevant landmarks
             var thumbTip = landmarks[4];
@@ -106,7 +106,6 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
             if (result.handLandmarks != null && result.handLandmarks.Count > 0)
             {
-                // Only process the first detected hand
                 var hand = result.handLandmarks[0];
                 if (hand.landmarks.Count >= 21)
                 {
@@ -116,11 +115,12 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
                     var protoLandmarks = ConvertToProto(hand.landmarks);
                     var gesture = DetectGesture(protoLandmarks);
 
-                    CurrentGesture = gesture;  // Store detected gesture in the public property
+                    CurrentGesture = gesture;
                     status = $"Hand Position: {position}\nGesture: {gesture}";
-                    _statusToDisplay = status;
                 }
             }
+
+            _statusToDisplay = status; // <-- sempre atualiza o texto
 
             if (status != _lastStatus)
             {

@@ -5,14 +5,14 @@ using System.Collections.Generic;
 public class HandOverlayDetector : MonoBehaviour
 {
     public LayerMask detectionLayer;
-    public float screenDistanceThreshold = 100f;
-    public float maxAllowedVelocity = 3000f;
+    public float screenDistanceThreshold = 40f;
+    public float maxAllowedVelocity = 30f;
     public HandLandmarkerRunner gestureDetector;
 
     public RectTransform canvasRectTransform;
     public Vector3 landmarkOffset = Vector3.zero;
     public Vector3 positionOffset = Vector3.zero;
-    public float constantZDistance = 299f;
+    public float constantZDistance = 19f;
 
     private List<Transform> middleMCPs = new List<Transform>();
     private GameObject currentDraggedObject;

@@ -67,5 +67,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5108196334546607294, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6441643698390515081}
   m_SourcePrefab: {fileID: 3150474306388093854, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
+--- !u!1 &2576522843621581219 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5108196334546607294, guid: 08b52fac28428b6409b6a1de1d3236f8, type: 3}
+  m_PrefabInstance: {fileID: 7287475522066726173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6441643698390515081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2576522843621581219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 417f5578ef89c354484fda05c97034ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableRotation: 1
+  rotationAxis: {x: -1, y: -1, z: 0}
+  rotationSpeed: 10
+  enableVerticalMovement: 1
+  movementAmplitude: -0.2
+  movementSpeed: 1
+  enableScaling: 0
+  scaleAmplitude: {x: 0.5, y: 0.5, z: 0.5}
+  scaleSpeed: 1
