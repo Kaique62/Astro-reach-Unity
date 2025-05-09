@@ -133,7 +133,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             Debug.Log($"Initializing Hand Landmarker with {config.NumHands} hands");
 
             // Force single hand detection
-            config.NumHands = 1;
+            //config.NumHands = 1;
 
             yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 
