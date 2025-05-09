@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Mediapipe;
+//using System.Linq;
 using TMPro;
 
 namespace Mediapipe.Unity.Sample.HandLandmarkDetection
@@ -51,7 +51,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             var pinkyPip = landmarks[18];
 
             // Check finger states (true = extended, false = bent)
-            bool thumbExtended = thumbTip.Y < thumbIp.Y;
+            //bool thumbExtended = thumbTip.Y < thumbIp.Y;
             bool indexExtended = indexTip.Y < indexPip.Y;
             bool middleExtended = middleTip.Y < middlePip.Y;
             bool ringExtended = ringTip.Y < ringPip.Y;
@@ -107,6 +107,10 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             if (result.handLandmarks != null && result.handLandmarks.Count > 0)
             {
                 var hand = result.handLandmarks[0];
+                //var hand = result.handLandmarks
+                //.Where(h => h.landmarks.Count >= 21)
+                //.OrderBy(h => h.landmarks[0].z) // menor z = mais próxima
+                //.FirstOrDefault();
                 if (hand.landmarks.Count >= 21)
                 {
                     var wrist = hand.landmarks[0];
