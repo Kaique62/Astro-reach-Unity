@@ -3,10 +3,13 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class NaveController : MonoBehaviour
 {
+    private Vector3 initialPosition;
     private void Start()
     {
         Debug.Log("[NaveController] Script Initialized!");
         
+        initialPosition = transform.position;
+
         // Ensure this object has a collider
         Collider col = GetComponent<Collider>();
         if (col == null)
@@ -41,6 +44,7 @@ public class NaveController : MonoBehaviour
         else if (other.gameObject.CompareTag("Asteroide"))
         {
             Debug.Log("[NaveController] Nave Colidiu com Asteroide!");
+            transform.position = initialPosition;
         }
         else
         {

@@ -29,7 +29,7 @@ public class ProceduralSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R)) ReiniciarCena();
     }
 
-    void GerarCena()
+    public void GerarCena()
     {
         LimparCena();
 
