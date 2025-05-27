@@ -35,7 +35,7 @@ Ajude astronautas com dificuldades motoras a superar desafios cósmicos com gest
 - 300Mb de armazenamento
 - 4Gb de Ram
 - Snapdragon 6 ou superior
-**Caso seu Dispositivo não atenda aos requisitos minimos, Recomenda-se a utilização da [versão da Godot](https://github.com/Z1C4z/Project-AstroReach)**
+- **Caso seu Dispositivo não atenda aos requisitos minimos, Recomenda-se a utilização da [versão da Godot](https://github.com/Z1C4z/Project-AstroReach)**
 
 ### 🔭 Configuração do Projeto
 
