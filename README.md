@@ -19,7 +19,7 @@
 - 🎮 Unity 6 rodando nativamente no Android
 - ✋ Sistema próprio de rastreamento de mãos usando apenas a câmera do celular
 - 🧠 Mecânicas interativas para estimular coordenação motora
-- 📊 Módulo integrado de acompanhamento de progresso e desempenho
+- 📊 Módulo integrado de acompanhamento de progresso e desempenho (Ainda em Andamento! Atualmente o projeto ainda não contém feedbacks e métricas de performance, porém serão adicionadas na próxima implementação geral)
 
 Ajude astronautas com dificuldades motoras a superar desafios cósmicos com gestos e movimentos reais!
 
