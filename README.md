@@ -31,6 +31,11 @@ Ajude astronautas com dificuldades motoras a superar desafios cósmicos com gest
 - [Unity 6.0.0 ou superior](https://unity.com/releases/editor)
 - Suporte ao Android Build instalado via Unity Hub
 - Smartphone Android com câmera (traseira)
+### Recomendações de Hardware:
+- 300Mb de armazenamento
+- 4Gb de Ram
+- Snapdragon 6 ou superior
+**Caso seu Dispositivo não atenda aos requisitos minimos, Recomenda-se a utilização da [versão da Godot](https://github.com/Z1C4z/Project-AstroReach)**
 
 ### 🔭 Configuração do Projeto
 
