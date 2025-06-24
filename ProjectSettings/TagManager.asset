@@ -8,6 +8,7 @@ TagManager:
   - Nave
   - Planeta
   - Asteroide
+  - Button
   layers:
   - Default
   - TransparentFX
